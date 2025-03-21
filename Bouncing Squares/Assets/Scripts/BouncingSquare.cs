@@ -1,10 +1,12 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class BouncingSquare : MonoBehaviour
 {
     private bool isSelected = false;
     private SpriteRenderer outlineRenderer;
 
+    public List<IModifier> modifiers { get; private set; } = new List<IModifier>();
     public Color hoveredColor = Color.yellow;
     public Color selectedColor = Color.green;
 
@@ -31,5 +33,21 @@ public class BouncingSquare : MonoBehaviour
 
         if (isSelected) outlineRenderer.color = selectedColor;
         else outlineRenderer.enabled = false;
+    }
+
+    public void PositionChangedCallback(bool isX, string data)
+    {
+        Vector3 newPos = transform.position;
+
+        if (isX)
+        {
+            newPos.x = float.Parse(data);
+        }
+        else
+        {
+            newPos.y = float.Parse(data);
+        }
+
+        transform.position = newPos;
     }
 }
