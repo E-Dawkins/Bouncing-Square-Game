@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class AddVelocity : MonoBehaviour
+public class AddVelocity : IModifier
 {
     public Vector2 velocity = Vector2.zero;
 
