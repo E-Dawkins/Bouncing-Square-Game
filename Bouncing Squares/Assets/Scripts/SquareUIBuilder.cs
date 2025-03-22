@@ -36,13 +36,18 @@ public class SquareUIBuilder : MonoBehaviour
     private void AddVec2(float x, float y, UnityAction<bool, string> callback)
     {
         GameObject vec2Obj = Instantiate(vec2Prefab, transform);
-        vec2Obj?.GetComponent<TMP_Text>()?.SetText("Position");
 
-        TMP_InputField xInput = vec2Obj?.transform?.GetChild(0)?.GetComponent<TMP_InputField>();
+        TMP_Text label = vec2Obj?.transform?.GetChild(0)?.GetComponent<TMP_Text>();
+        label?.SetText("Position");
+
+
+        GameObject inputsParent = vec2Obj?.transform?.GetChild(1).gameObject;
+
+        TMP_InputField xInput = inputsParent?.transform?.GetChild(0)?.GetComponent<TMP_InputField>();
         xInput?.SetTextWithoutNotify(x.ToString());
         xInput?.onValueChanged.AddListener((data) => { callback.Invoke(true, data); });
 
-        TMP_InputField yInput = vec2Obj?.transform?.GetChild(1)?.GetComponent<TMP_InputField>();
+        TMP_InputField yInput = inputsParent?.transform?.GetChild(1)?.GetComponent<TMP_InputField>();
         yInput?.SetTextWithoutNotify(y.ToString());
         yInput?.onValueChanged.AddListener((data) => { callback.Invoke(false, data); });
     }
