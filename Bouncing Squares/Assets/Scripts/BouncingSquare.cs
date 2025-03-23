@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 public class BouncingSquare : MonoBehaviour
 {
@@ -14,6 +15,9 @@ public class BouncingSquare : MonoBehaviour
     {
         outlineRenderer = transform.Find("Outline")?.gameObject.GetComponent<SpriteRenderer>();
         outlineRenderer.enabled = false;
+
+        // default modifiers
+        modifiers.Add(new AddVelocity());
     }
 
     private void OnMouseEnter()
@@ -35,19 +39,29 @@ public class BouncingSquare : MonoBehaviour
         else outlineRenderer.enabled = false;
     }
 
-    public void PositionChangedCallback(bool isX, string data)
+    public void CreateUI(SquareUIBuilder uiBuilder)
     {
-        Vector3 newPos = transform.position;
+        uiBuilder.AddText(name);
+        uiBuilder.AddVec2("Position", transform.position, (v) => { transform.position = v; });
 
-        if (isX)
+        foreach (IModifier modifier in modifiers)
         {
-            newPos.x = float.Parse(data);
+            modifier.CreateUI(uiBuilder);
         }
-        else
-        {
-            newPos.y = float.Parse(data);
-        }
+    }
 
-        transform.position = newPos;
+    public void ApplyModifiers()
+    {
+        foreach (IModifier modifier in modifiers)
+        {
+            Type type = modifier.GetType();
+            IModifier copy = gameObject.AddComponent(type) as IModifier;
+            foreach (var field in type.GetFields())
+            {
+                field.SetValue(copy, field.GetValue(modifier)); // Copy each field's value
+            }
+
+            copy.CustomStart();
+        }
     }
 }

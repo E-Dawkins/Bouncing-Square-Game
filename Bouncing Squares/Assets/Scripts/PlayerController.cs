@@ -19,9 +19,19 @@ public class PlayerController : MonoBehaviour
                 square?.SetSelected(true);
 
                 squareUIBuilder?.ClearUI();
-                squareUIBuilder?.BuildUI(square);
+                square.CreateUI(squareUIBuilder);
 
                 selectedSquare = square;
+            }
+        }
+
+        Object[] bouncingSquares = FindObjectsByType(typeof(BouncingSquare), FindObjectsSortMode.None);
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            foreach (BouncingSquare square in bouncingSquares)
+            {
+                square.ApplyModifiers();
             }
         }
     }

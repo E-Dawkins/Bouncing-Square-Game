@@ -11,5 +11,13 @@ public class IModifier : MonoBehaviour
     public string displayName = "IModifier";
     public string hint = "This modifier does nothing.";
 
-    public void HandleCollision(CollisionData data) { }
+    public virtual void CustomStart() { }
+
+    public virtual void HandleCollision(CollisionData data) { }
+
+    public virtual void CreateUI(SquareUIBuilder uiBuilder) 
+    {
+        uiBuilder.AddText(displayName);
+        uiBuilder.AddText(hint);
+    }
 }
