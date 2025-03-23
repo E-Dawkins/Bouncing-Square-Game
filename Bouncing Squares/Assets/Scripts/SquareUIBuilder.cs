@@ -7,6 +7,7 @@ public class SquareUIBuilder : MonoBehaviour
     public GameObject textPrefab;
     public GameObject vec2Prefab;
     public GameObject floatPrefab;
+    public GameObject intPrefab;
 
     public void ClearUI()
     {
@@ -70,5 +71,27 @@ public class SquareUIBuilder : MonoBehaviour
         }
 
         floatInput?.onValueChanged.AddListener(localCallback);
+    }
+
+    public void AddInt(string label, int value, UnityAction<int> callback)
+    {
+        GameObject intObj = Instantiate(intPrefab, transform);
+
+        TMP_Text tmpText = intObj?.transform?.GetChild(0)?.GetComponent<TMP_Text>();
+        tmpText?.SetText(label);
+
+
+        TMP_InputField intInput = intObj?.transform?.GetChild(1)?.GetComponent<TMP_InputField>();
+        intInput?.SetTextWithoutNotify(value.ToString());
+
+        void localCallback(string data)
+        {
+            if (int.TryParse(data, out int dataValue))
+            {
+                callback(dataValue);
+            }
+        }
+
+        intInput?.onValueChanged.AddListener(localCallback);
     }
 }
