@@ -736,7 +736,7 @@ GameObject:
   - component: {fileID: 1098137148}
   - component: {fileID: 1098137149}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: UIBuilder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -839,6 +839,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   textPrefab: {fileID: 2966953743003228187, guid: c197d18cc4a606249ba7b5bf24a7783b, type: 3}
   vec2Prefab: {fileID: 2966953743003228187, guid: e5305dcacd15ae5428f0956de5045268, type: 3}
+  floatPrefab: {fileID: 2966953743003228187, guid: 1dfb3ca9edb07a0459c356669d88b3f5, type: 3}
 --- !u!1 &1178307956
 GameObject:
   m_ObjectHideFlags: 0
