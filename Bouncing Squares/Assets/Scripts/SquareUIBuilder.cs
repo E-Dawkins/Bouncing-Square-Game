@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using System.Collections.Generic;
 
 public class SquareUIBuilder : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class SquareUIBuilder : MonoBehaviour
     public GameObject vec2Prefab;
     public GameObject floatPrefab;
     public GameObject intPrefab;
+    public GameObject dropdownPrefab;
 
     public void ClearUI()
     {
@@ -93,5 +95,21 @@ public class SquareUIBuilder : MonoBehaviour
         }
 
         intInput?.onValueChanged.AddListener(localCallback);
+    }
+
+    public void AddDropdown(string label, List<string> options, UnityAction<int> callback)
+    {
+        GameObject dropdownObj = Instantiate(dropdownPrefab, transform);
+
+        TMP_Text tmpText = dropdownObj?.transform?.GetChild(0)?.GetComponent<TMP_Text>();
+        tmpText?.SetText(label);
+
+
+        TMP_Dropdown dropdownInput = dropdownObj?.transform?.GetChild(1)?.GetComponent<TMP_Dropdown>();
+        dropdownInput?.ClearOptions();
+        dropdownInput?.AddOptions(options);
+        dropdownInput?.SetValueWithoutNotify(0);
+
+        dropdownInput?.onValueChanged.AddListener(callback);
     }
 }
