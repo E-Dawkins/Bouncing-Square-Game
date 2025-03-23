@@ -6,6 +6,8 @@ public class BouncingSquare : MonoBehaviour
 {
     private bool isSelected = false;
     private SpriteRenderer outlineRenderer;
+    private Rigidbody2D rb;
+    private Vector2 lastVelocity = Vector2.zero;
 
     public List<IModifier> modifiers { get; private set; } = new List<IModifier>();
     public Color hoveredColor = Color.yellow;
@@ -13,11 +15,18 @@ public class BouncingSquare : MonoBehaviour
 
     private void Awake()
     {
+        rb = GetComponent<Rigidbody2D>();
+
         outlineRenderer = transform.Find("Outline")?.gameObject.GetComponent<SpriteRenderer>();
         outlineRenderer.enabled = false;
 
         // default modifiers
         modifiers.Add(new AddVelocity());
+    }
+
+    private void FixedUpdate()
+    {
+        lastVelocity = rb.linearVelocity;
     }
 
     private void OnMouseEnter()
@@ -29,6 +38,17 @@ public class BouncingSquare : MonoBehaviour
     private void OnMouseExit()
     {
         outlineRenderer.enabled = isSelected;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Square"))
+        {
+            // resolve any unwanted movement
+            // i.e. after a bounce if one square would be frozen, apply negative previous velocity
+            if (rb.linearVelocity.x == 0) rb.linearVelocity = new Vector2(-lastVelocity.x, rb.linearVelocity.y);
+            if (rb.linearVelocity.y == 0) rb.linearVelocity = new Vector2(rb.linearVelocity.x, -lastVelocity.y);
+        }
     }
 
     public void SetSelected(bool selected)

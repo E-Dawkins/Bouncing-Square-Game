@@ -1047,30 +1047,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2471727108418763156, guid: da22e62152d4fc342a8adc7087ec6aaa, type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 6200000, guid: 788a93b7465dc364aa1b5acbc1f48fcf, type: 2}
-    - target: {fileID: 8091322294009432891, guid: da22e62152d4fc342a8adc7087ec6aaa, type: 3}
-      propertyPath: m_Color.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8091322294009432891, guid: da22e62152d4fc342a8adc7087ec6aaa, type: 3}
-      propertyPath: m_Color.g
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8091322294009432891, guid: da22e62152d4fc342a8adc7087ec6aaa, type: 3}
-      propertyPath: m_Color.r
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9048605284211224798, guid: da22e62152d4fc342a8adc7087ec6aaa, type: 3}
-      propertyPath: velocity.x
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 9048605284211224798, guid: da22e62152d4fc342a8adc7087ec6aaa, type: 3}
-      propertyPath: velocity.y
-      value: 350
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
