@@ -22,6 +22,7 @@ public class BouncingSquare : MonoBehaviour
 
         // default modifiers
         modifiers.Add(new Health());
+        modifiers.Add(new ContactDamage());
         modifiers.Add(new AddVelocity());
     }
 
@@ -49,6 +50,16 @@ public class BouncingSquare : MonoBehaviour
             // i.e. after a bounce if one square would be frozen, apply negative previous velocity
             if (rb.linearVelocity.x == 0) rb.linearVelocity = new Vector2(-lastVelocity.x, rb.linearVelocity.y);
             if (rb.linearVelocity.y == 0) rb.linearVelocity = new Vector2(rb.linearVelocity.x, -lastVelocity.y);
+
+            CollisionData collisionData = new CollisionData();
+            collisionData.otherSquare = collision.gameObject?.GetComponent<BouncingSquare>();
+            collisionData.directionToOtherSquare = (collision.transform.position - transform.position).normalized;
+
+            // handle collision in modifiers
+            foreach (IModifier modifier in modifiers)
+            {
+                modifier.HandleCollision(collisionData);
+            }
         }
     }
 

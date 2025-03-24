@@ -2,8 +2,8 @@ using UnityEngine;
 
 public struct CollisionData
 {
-    BouncingSquare otherSquare;
-    Vector2 directionToOtherSquare;
+    public BouncingSquare otherSquare;
+    public Vector2 directionToOtherSquare;
 }
 
 public class IModifier : MonoBehaviour
