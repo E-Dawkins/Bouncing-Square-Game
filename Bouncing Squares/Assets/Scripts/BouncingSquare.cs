@@ -21,6 +21,7 @@ public class BouncingSquare : MonoBehaviour
         outlineRenderer.enabled = false;
 
         // default modifiers
+        modifiers.Add(new Health());
         modifiers.Add(new AddVelocity());
     }
 
