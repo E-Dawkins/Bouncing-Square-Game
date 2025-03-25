@@ -1,24 +1,15 @@
 
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class ModifierAttribs
 {
-    public enum ModifierTypes
+    public static List<Type> Modifiers = new List<Type>
     {
-        NONE = 0,
-        ADD_VELOCITY
-    }
-
-    public Dictionary<ModifierTypes, Type> Modifiers;
-
-    public ModifierAttribs()
-    {
-        Modifiers = new Dictionary<ModifierTypes, Type>
-        {
-            { ModifierTypes.NONE, typeof(MonoBehaviour) },
-            { ModifierTypes.ADD_VELOCITY, typeof(AddVelocity) },
-        };
-    }
+        typeof(AddVelocity),
+        typeof(Health),
+        typeof(HealthSteal),
+        typeof(HealthRegen),
+        typeof(ContactDamage),
+    };
 }

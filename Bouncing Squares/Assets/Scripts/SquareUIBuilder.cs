@@ -2,6 +2,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using System.Collections.Generic;
+using UnityEngine.UI;
+using System;
 
 public class SquareUIBuilder : MonoBehaviour
 {
@@ -10,6 +12,7 @@ public class SquareUIBuilder : MonoBehaviour
     public GameObject floatPrefab;
     public GameObject intPrefab;
     public GameObject dropdownPrefab;
+    public GameObject componentButtonPrefab;
 
     public void ClearUI()
     {
@@ -111,5 +114,49 @@ public class SquareUIBuilder : MonoBehaviour
         dropdownInput?.SetValueWithoutNotify(0);
 
         dropdownInput?.onValueChanged.AddListener(callback);
+    }
+
+    public void AddModifierButton(string label, BouncingSquare square, UnityAction<string> callback)
+    {
+        GameObject parentObj = Instantiate(componentButtonPrefab, transform);
+
+
+        GameObject dropdownObj = parentObj?.transform?.GetChild(0)?.gameObject;
+
+        TMP_Dropdown dropdownComp = dropdownObj?.GetComponent<TMP_Dropdown>();
+        List<string> options = new List<string>();
+        foreach (Type type in ModifierAttribs.Modifiers) // only add options that square doesn't have already
+        {
+            IModifier modifierInst = (Activator.CreateInstance(type) as IModifier);
+            int foundIndex = square.modifiers.FindIndex((modifier) => { return modifier.displayName == modifierInst.displayName; });
+
+            if (foundIndex == -1)
+            {
+                options.Add(modifierInst.displayName);
+            }
+        }
+        dropdownComp?.AddOptions(options);
+
+
+        GameObject buttonObj = parentObj?.transform?.GetChild(1)?.gameObject;
+
+        TMP_Text textComp = buttonObj?.transform?.GetChild(0)?.GetComponent<TMP_Text>();
+        textComp?.SetText(label);
+
+        Button buttonComp = buttonObj?.GetComponent<Button>();
+        buttonComp?.onClick.AddListener(() => 
+        {
+            // update square modifiers
+            callback.Invoke(dropdownComp?.options[dropdownComp.value].text);
+
+            // update dropdown options
+            List<TMP_Dropdown.OptionData> newOptions = new (dropdownComp?.options);
+            newOptions.RemoveAt(dropdownComp.value);
+            dropdownComp?.ClearOptions();
+            dropdownComp?.AddOptions(newOptions);
+
+            // update button child index
+            parentObj.transform.SetAsLastSibling();
+        });
     }
 }

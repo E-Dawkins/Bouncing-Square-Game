@@ -80,6 +80,21 @@ public class BouncingSquare : MonoBehaviour
         {
             modifier.CreateUI(uiBuilder);
         }
+
+        uiBuilder.AddModifierButton("Add Modifier", this, (s) => 
+        {
+            // add the corresponding modifier to our modifier list
+            foreach (Type type in ModifierAttribs.Modifiers)
+            {
+                IModifier modifierInst = (Activator.CreateInstance(type) as IModifier);
+
+                if (modifierInst.displayName == s)
+                {
+                    modifiers.Add(modifierInst);
+                    modifierInst.CreateUI(uiBuilder);
+                }
+            }
+        });
     }
 
     public void ApplyModifiers()
