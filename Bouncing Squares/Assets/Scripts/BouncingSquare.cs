@@ -78,6 +78,7 @@ public class BouncingSquare : MonoBehaviour
 
         foreach (IModifier modifier in modifiers)
         {
+            uiBuilder.AddModifierLabel(modifier, this);
             modifier.CreateUI(uiBuilder);
         }
 
@@ -91,6 +92,8 @@ public class BouncingSquare : MonoBehaviour
                 if (modifierInst.displayName == s)
                 {
                     modifiers.Add(modifierInst);
+
+                    uiBuilder.AddModifierLabel(modifierInst, this);
                     modifierInst.CreateUI(uiBuilder);
                 }
             }

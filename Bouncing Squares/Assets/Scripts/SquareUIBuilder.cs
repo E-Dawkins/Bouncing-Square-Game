@@ -13,6 +13,9 @@ public class SquareUIBuilder : MonoBehaviour
     public GameObject intPrefab;
     public GameObject dropdownPrefab;
     public GameObject componentButtonPrefab;
+    public GameObject modifierLabelPrefab;
+
+    private GameObject componentButtonInstance;
 
     public void ClearUI()
     {
@@ -119,11 +122,79 @@ public class SquareUIBuilder : MonoBehaviour
     public void AddModifierButton(string label, BouncingSquare square, UnityAction<string> callback)
     {
         GameObject parentObj = Instantiate(componentButtonPrefab, transform);
+        componentButtonInstance = parentObj;
 
 
-        GameObject dropdownObj = parentObj?.transform?.GetChild(0)?.gameObject;
+        UpdateComponentButton(square);
+
+
+        GameObject buttonObj = parentObj?.transform?.GetChild(1)?.gameObject;
+
+        TMP_Text textComp = buttonObj?.transform?.GetChild(0)?.GetComponent<TMP_Text>();
+        textComp?.SetText(label);
+
+        Button buttonComp = buttonObj?.GetComponent<Button>();
+        buttonComp?.onClick.AddListener(() => 
+        {
+            // update square modifiers
+            GameObject dropdownObj = parentObj?.transform?.GetChild(0)?.gameObject;
+            TMP_Dropdown dropdownComp = dropdownObj?.GetComponent<TMP_Dropdown>();
+            callback.Invoke(dropdownComp?.options[dropdownComp.value].text);
+
+            // update dropdown options
+            UpdateComponentButton(square);
+
+            // update button child index
+            parentObj.transform.SetAsLastSibling();
+        });
+    }
+
+    public void AddModifierLabel(IModifier modifier, BouncingSquare square)
+    {
+        GameObject parentObj = Instantiate(modifierLabelPrefab, transform);
+
+        TMP_Text textComp = parentObj?.transform.GetChild(0)?.GetComponent<TMP_Text>();
+        textComp?.SetText(modifier.displayName);
+
+        Button buttonComp = parentObj?.transform.GetChild(1)?.GetComponent<Button>();
+        buttonComp?.onClick.AddListener(() => 
+        {
+            // destroy this label and every object after it, until next label
+            Destroy(parentObj);
+            for (int i = parentObj.transform.GetSiblingIndex() + 1; i <= transform.childCount; i++)
+            {
+                GameObject childObj = transform.GetChild(i).gameObject;
+
+                if (childObj.name == (modifierLabelPrefab.name + "(Clone)") ||
+                    childObj.name == (componentButtonPrefab.name + "(Clone)"))
+                {
+                    break;
+                }
+
+                Destroy(childObj);
+            }
+
+            // remove this modifiers' ui elements
+            for (int i = 0; i < square.modifiers.Count; i++)
+            {
+                if (square.modifiers[i].displayName == modifier.displayName)
+                {
+                    square.modifiers.RemoveAt(i);
+                    break;
+                }
+            }
+
+            UpdateComponentButton(square);
+        });
+    }
+
+    private void UpdateComponentButton(BouncingSquare square)
+    {
+        GameObject dropdownObj = componentButtonInstance?.transform?.GetChild(0)?.gameObject;
 
         TMP_Dropdown dropdownComp = dropdownObj?.GetComponent<TMP_Dropdown>();
+        dropdownComp?.ClearOptions();
+
         List<string> options = new List<string>();
         foreach (Type type in ModifierAttribs.Modifiers) // only add options that square doesn't have already
         {
@@ -136,27 +207,5 @@ public class SquareUIBuilder : MonoBehaviour
             }
         }
         dropdownComp?.AddOptions(options);
-
-
-        GameObject buttonObj = parentObj?.transform?.GetChild(1)?.gameObject;
-
-        TMP_Text textComp = buttonObj?.transform?.GetChild(0)?.GetComponent<TMP_Text>();
-        textComp?.SetText(label);
-
-        Button buttonComp = buttonObj?.GetComponent<Button>();
-        buttonComp?.onClick.AddListener(() => 
-        {
-            // update square modifiers
-            callback.Invoke(dropdownComp?.options[dropdownComp.value].text);
-
-            // update dropdown options
-            List<TMP_Dropdown.OptionData> newOptions = new (dropdownComp?.options);
-            newOptions.RemoveAt(dropdownComp.value);
-            dropdownComp?.ClearOptions();
-            dropdownComp?.AddOptions(newOptions);
-
-            // update button child index
-            parentObj.transform.SetAsLastSibling();
-        });
     }
 }

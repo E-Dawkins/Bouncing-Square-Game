@@ -200,6 +200,7 @@ MonoBehaviour:
   intPrefab: {fileID: 2966953743003228187, guid: a8921156b015db44888f027978783bfd, type: 3}
   dropdownPrefab: {fileID: 2966953743003228187, guid: cd13a2ada5b1b9c43b0b4f91940d99e2, type: 3}
   componentButtonPrefab: {fileID: 6675425575793312318, guid: 94de80e2e05564f41963ea3c6de72990, type: 3}
+  modifierLabelPrefab: {fileID: 8167261877935727700, guid: e8d182f118cbbb64e972f315c93e9b3d, type: 3}
 --- !u!1 &96173327
 GameObject:
   m_ObjectHideFlags: 0

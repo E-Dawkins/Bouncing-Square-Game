@@ -15,9 +15,5 @@ public class IModifier : MonoBehaviour
 
     public virtual void HandleCollision(CollisionData data) { }
 
-    public virtual void CreateUI(SquareUIBuilder uiBuilder) 
-    {
-        uiBuilder.AddText(displayName);
-        uiBuilder.AddText(hint);
-    }
+    public virtual void CreateUI(SquareUIBuilder uiBuilder) { }
 }
