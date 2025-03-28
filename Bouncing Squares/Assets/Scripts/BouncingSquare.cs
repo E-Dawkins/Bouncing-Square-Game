@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System;
+using UnityEngine.UI;
 
 public class BouncingSquare : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class BouncingSquare : MonoBehaviour
     private SpriteRenderer outlineRenderer;
     private Rigidbody2D rb;
     private Vector2 lastVelocity = Vector2.zero;
+    private Slider healthSlider;
 
     public int health = 5;
     public List<IModifier> modifiers { get; private set; } = new List<IModifier>();
@@ -17,6 +19,14 @@ public class BouncingSquare : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        healthSlider = GetComponentInChildren<Slider>();
+
+        if (healthSlider)
+        {
+            healthSlider.minValue = 0;
+            healthSlider.maxValue = health;
+            healthSlider.value = health;
+        }
 
         outlineRenderer = transform.Find("Outline")?.gameObject.GetComponent<SpriteRenderer>();
         outlineRenderer.enabled = false;
@@ -24,6 +34,14 @@ public class BouncingSquare : MonoBehaviour
         // default modifiers
         modifiers.Add(new ContactDamage(this));
         modifiers.Add(new AddVelocity(this));
+    }
+
+    private void Update()
+    {
+        if (healthSlider)
+        {
+            healthSlider.value = health;
+        }
     }
 
     private void FixedUpdate()
