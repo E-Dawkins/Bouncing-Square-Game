@@ -4,7 +4,7 @@ public class HealthSteal : IModifier
 {
     public int value = 1;
 
-    public HealthSteal()
+    public HealthSteal(BouncingSquare owner) : base(owner)
     {
         displayName = "Vampirism";
         hint = "Steal health when squares collide.";
@@ -12,11 +12,8 @@ public class HealthSteal : IModifier
 
     public override void HandleCollision(CollisionData data)
     {
-        Health otherHealthComponent = data.otherSquare?.GetComponent<Health>();
-        if (otherHealthComponent) otherHealthComponent.value -= value;
-
-        Health healthComponent = gameObject.GetComponent<Health>();
-        if (healthComponent) healthComponent.value += value;
+        data.otherSquare.health -= value;
+        owningSquare.health += value;
     }
 
     public override void CreateUI(SquareUIBuilder uiBuilder)

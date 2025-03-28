@@ -5,18 +5,12 @@ public class HealthRegen : IModifier
     public int amount = 1;
     public float interval = 1;
 
-    private Health healthComponent;
     private float timer = 0;
 
-    public HealthRegen()
+    public HealthRegen(BouncingSquare owner) : base(owner)
     {
         displayName = "Health Regen.";
         hint = "Regenerate health every X seconds.";
-    }
-
-    private void Awake()
-    {
-        healthComponent = gameObject.GetComponent<Health>();
     }
 
     private void Update()
@@ -27,10 +21,7 @@ public class HealthRegen : IModifier
         {
             timer = 0;
 
-            if (healthComponent)
-            {
-                healthComponent.value += amount;
-            }
+            owningSquare.health += amount;
         }
     }
 

@@ -9,6 +9,7 @@ public class BouncingSquare : MonoBehaviour
     private Rigidbody2D rb;
     private Vector2 lastVelocity = Vector2.zero;
 
+    public int health = 5;
     public List<IModifier> modifiers { get; private set; } = new List<IModifier>();
     public Color hoveredColor = Color.yellow;
     public Color selectedColor = Color.green;
@@ -21,9 +22,8 @@ public class BouncingSquare : MonoBehaviour
         outlineRenderer.enabled = false;
 
         // default modifiers
-        modifiers.Add(new Health());
-        modifiers.Add(new ContactDamage());
-        modifiers.Add(new AddVelocity());
+        modifiers.Add(new ContactDamage(this));
+        modifiers.Add(new AddVelocity(this));
     }
 
     private void FixedUpdate()
@@ -75,6 +75,7 @@ public class BouncingSquare : MonoBehaviour
     {
         uiBuilder.AddText(name);
         uiBuilder.AddVec2("Position", transform.position, (v) => { transform.position = v; });
+        uiBuilder.AddInt("Health", health, (i) => { health = i; });
 
         foreach (IModifier modifier in modifiers)
         {
@@ -87,7 +88,7 @@ public class BouncingSquare : MonoBehaviour
             // add the corresponding modifier to our modifier list
             foreach (Type type in ModifierAttribs.Modifiers)
             {
-                IModifier modifierInst = (Activator.CreateInstance(type) as IModifier);
+                IModifier modifierInst = (Activator.CreateInstance(type, new object[] { this }) as IModifier);
 
                 if (modifierInst.displayName == s)
                 {

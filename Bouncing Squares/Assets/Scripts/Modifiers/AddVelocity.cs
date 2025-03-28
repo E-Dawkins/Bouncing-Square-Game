@@ -4,7 +4,7 @@ public class AddVelocity : IModifier
 {
     public Vector2 velocity = Vector2.zero;
 
-    public AddVelocity()
+    public AddVelocity(BouncingSquare owner) : base(owner)
     {
         displayName = "Initial Velocity";
         hint = "The starting velocity of the square.";

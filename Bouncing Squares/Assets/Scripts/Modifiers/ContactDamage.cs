@@ -4,7 +4,7 @@ public class ContactDamage : IModifier
 {
     public int value = 1;
 
-    public ContactDamage()
+    public ContactDamage(BouncingSquare owner) : base(owner)
     {
         displayName = "Contact Damage";
         hint = "Inflicted damage when squares collide.";
@@ -12,11 +12,7 @@ public class ContactDamage : IModifier
 
     public override void HandleCollision(CollisionData data)
     {
-        Health healthComponent = data.otherSquare?.GetComponent<Health>();
-        if (healthComponent)
-        {
-            healthComponent.value -= value;
-        }
+        data.otherSquare.health -= value;
     }
 
     public override void CreateUI(SquareUIBuilder uiBuilder)

@@ -198,7 +198,7 @@ public class SquareUIBuilder : MonoBehaviour
         List<string> options = new List<string>();
         foreach (Type type in ModifierAttribs.Modifiers) // only add options that square doesn't have already
         {
-            IModifier modifierInst = (Activator.CreateInstance(type) as IModifier);
+            IModifier modifierInst = (Activator.CreateInstance(type, new object[] { square }) as IModifier);
             int foundIndex = square.modifiers.FindIndex((modifier) => { return modifier.displayName == modifierInst.displayName; });
 
             if (foundIndex == -1)
