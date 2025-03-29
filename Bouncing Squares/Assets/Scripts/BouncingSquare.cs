@@ -11,6 +11,7 @@ public class BouncingSquare : MonoBehaviour
     private Vector2 lastVelocity = Vector2.zero;
     private Slider healthSlider;
 
+    public bool isBlocking { get; private set; } = false;
     public int health { get; private set; } = 5;
     public List<IModifier> modifiers { get; private set; } = new List<IModifier>();
     public Color hoveredColor = Color.yellow;
@@ -160,11 +161,22 @@ public class BouncingSquare : MonoBehaviour
 
     public void Damage(int amount)
     {
+        if (isBlocking)
+        {
+            isBlocking = false;
+            return;
+        }
+
         health -= amount;
     }
 
     public void Heal(int amount)
     {
         health += amount;
+    }
+
+    public void BlockNextDamage()
+    {
+        isBlocking = true;
     }
 }
