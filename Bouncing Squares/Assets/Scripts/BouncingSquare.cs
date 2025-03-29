@@ -40,6 +40,9 @@ public class BouncingSquare : MonoBehaviour
     {
         if (healthSlider)
         {
+            if (health > healthSlider.maxValue)
+                health = (int)healthSlider.maxValue;
+
             healthSlider.value = health;
         }
     }
@@ -93,7 +96,11 @@ public class BouncingSquare : MonoBehaviour
     {
         uiBuilder.AddText(name);
         uiBuilder.AddVec2("Position", transform.position, (v) => { transform.position = v; });
-        uiBuilder.AddInt("Health", health, (i) => { health = i; });
+        uiBuilder.AddInt("Health", health, (i) => 
+        { 
+            health = i;
+            healthSlider.maxValue = health;
+        });
 
         foreach (IModifier modifier in modifiers)
         {
