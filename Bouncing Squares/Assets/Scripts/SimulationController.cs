@@ -1,0 +1,86 @@
+using UnityEngine;
+using System.Collections.Generic;
+
+public class SimulationController : MonoBehaviour
+{
+    public SquareUIBuilder squareUIBuilder;
+
+    private BouncingSquare selectedSquare;
+    private List<BouncingSquare> squaresInLevel = new List<BouncingSquare>();
+    private Dictionary<BouncingSquare, Vector2> startingPositions = new Dictionary<BouncingSquare, Vector2>();
+    private bool isStarted = false;
+    private bool isPaused = false;
+
+    private void Awake()
+    {
+        Object[] foundSquares = FindObjectsByType(typeof(BouncingSquare), FindObjectsSortMode.None);
+        foreach (Object foundSquare in foundSquares)
+        {
+            BouncingSquare square = foundSquare as BouncingSquare;
+            if (square)
+            {
+                squaresInLevel.Add(square);
+            }
+        }
+    }
+
+    void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            HandleSquareSelect();
+        }
+    }
+
+    private void HandleSquareSelect()
+    {
+        Vector2 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        RaycastHit2D hit = Physics2D.Raycast(worldPoint, Vector2.zero);
+
+        BouncingSquare square = hit.transform?.GetComponent<BouncingSquare>();
+        if (square)
+        {
+            selectedSquare?.SetSelected(false);
+            square?.SetSelected(true);
+
+            squareUIBuilder?.ClearUI();
+            square.CreateUI(squareUIBuilder);
+
+            selectedSquare = square;
+        }
+    }
+
+    public void HandleSimStart()
+    {
+        if (isPaused || isStarted) return;
+
+        foreach (BouncingSquare square in squaresInLevel)
+        {
+            square.ApplyModifiers();
+            startingPositions[square] = square.transform.position;
+        }
+
+        isStarted = true;
+    }
+
+    public void HandleSimPause()
+    {
+        Time.timeScale = (isPaused ? 1 : 0);
+        isPaused = !isPaused;
+    }
+
+    public void HandleSimStop()
+    {
+        if (!isStarted) return;
+
+        foreach (BouncingSquare square in squaresInLevel)
+        {
+            square.Reset();
+            square.transform.position = startingPositions[square];
+        }
+
+        isStarted = false;
+        isPaused = false;
+        Time.timeScale = 1;
+    }
+}

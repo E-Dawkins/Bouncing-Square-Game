@@ -133,4 +133,17 @@ public class BouncingSquare : MonoBehaviour
             copy.CustomStart();
         }
     }
+
+    public void Reset()
+    {
+        // loop over all child components, if it is an IModifier, remove it :)
+        foreach (IModifier comp in GetComponents<IModifier>())
+        {
+            Destroy(comp);
+        }
+
+        // stop rigidbody movement
+        rb.angularVelocity = 0;
+        rb.linearVelocity = Vector2.zero;
+    }
 }
