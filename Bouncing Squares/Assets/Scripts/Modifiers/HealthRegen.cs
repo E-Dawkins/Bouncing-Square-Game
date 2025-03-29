@@ -28,7 +28,7 @@ public class HealthRegen : IModifier
     public override void CreateUI(SquareUIBuilder uiBuilder)
     {
         base.CreateUI(uiBuilder);
-        uiBuilder.AddInt("Amount", amount, (i) => { amount = i; });
-        uiBuilder.AddFloat("Interval", interval, (f) => { interval = f; });
+        uiBuilder.AddInt("Amount", amount, (i) => { amount = i; }, new Vector2(1, float.PositiveInfinity));
+        uiBuilder.AddFloat("Interval", interval, (f) => { interval = f; }, new Vector2(0.1f, float.PositiveInfinity));
     }
 }

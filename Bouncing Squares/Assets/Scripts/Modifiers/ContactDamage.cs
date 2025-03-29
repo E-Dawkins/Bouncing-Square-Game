@@ -18,6 +18,6 @@ public class ContactDamage : IModifier
     public override void CreateUI(SquareUIBuilder uiBuilder)
     {
         base.CreateUI(uiBuilder);
-        uiBuilder.AddInt("Damage", value, (i) => { value = i; });
+        uiBuilder.AddInt("Damage", value, (i) => { value = i; }, new Vector2(1, float.PositiveInfinity));
     }
 }

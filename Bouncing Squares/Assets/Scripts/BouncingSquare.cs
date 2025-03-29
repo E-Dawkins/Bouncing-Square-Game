@@ -100,7 +100,7 @@ public class BouncingSquare : MonoBehaviour
         { 
             health = i;
             healthSlider.maxValue = health;
-        });
+        }, new Vector2(1, float.PositiveInfinity));
 
         foreach (IModifier modifier in modifiers)
         {
