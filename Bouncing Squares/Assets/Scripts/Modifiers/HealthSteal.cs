@@ -12,8 +12,8 @@ public class HealthSteal : IModifier
 
     public override void HandleCollision(CollisionData data)
     {
-        data.otherSquare.health -= value;
-        owningSquare.health += value;
+        data.otherSquare.Damage(value);
+        owningSquare.Heal(value);
     }
 
     public override void CreateUI(SquareUIBuilder uiBuilder)

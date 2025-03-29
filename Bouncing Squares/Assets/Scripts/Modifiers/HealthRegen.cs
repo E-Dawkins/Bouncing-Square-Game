@@ -21,7 +21,7 @@ public class HealthRegen : IModifier
         {
             timer = 0;
 
-            owningSquare.health += amount;
+            owningSquare.Heal(amount);
         }
     }
 
