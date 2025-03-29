@@ -31,8 +31,12 @@ public class SquareUIBuilder : MonoBehaviour
         textObj?.GetComponent<TMP_Text>()?.SetText(text);
     }
 
-    public void AddVec2(string label, Vector2 value, UnityAction<Vector2> callback)
+    public void AddVec2(string label, Vector2 value, UnityAction<Vector2> callback, Vector2? clampedMin = null, Vector2? clampedMax = null)
     {
+        // initialize default range
+        if (clampedMin == null) clampedMin = Vector2.negativeInfinity;
+        if (clampedMax == null) clampedMax = Vector2.positiveInfinity;
+
         GameObject vec2Obj = Instantiate(vec2Prefab, transform);
 
         TMP_Text tmpText = vec2Obj?.transform?.GetChild(0)?.GetComponent<TMP_Text>();
@@ -51,7 +55,17 @@ public class SquareUIBuilder : MonoBehaviour
             Vector2 localValue = Vector2.zero;
             if (float.TryParse(xInput.text, out localValue.x) && float.TryParse(yInput.text, out localValue.y))
             {
-                callback(localValue);
+                // clamp the localValue before invoking callback
+                Vector2 clampedValue = localValue;
+                clampedValue = Vector2.Max(clampedValue, clampedMin.Value);
+                clampedValue = Vector2.Min(clampedValue, clampedMax.Value);
+                if (clampedValue != localValue)
+                {
+                    xInput.text = clampedValue.x.ToString();
+                    yInput.text = clampedValue.y.ToString();
+                }
+
+                callback(clampedValue);
             }
         }
 
@@ -59,8 +73,12 @@ public class SquareUIBuilder : MonoBehaviour
         yInput?.onValueChanged.AddListener(localCallback);
     }
 
-    public void AddFloat(string label, float value, UnityAction<float> callback)
+    public void AddFloat(string label, float value, UnityAction<float> callback, Vector2? clampedRange = null)
     {
+        // initialize default range
+        if (clampedRange == null)
+            clampedRange = new Vector2(Mathf.NegativeInfinity, Mathf.Infinity);
+
         GameObject floatObj = Instantiate(floatPrefab, transform);
 
         TMP_Text tmpText = floatObj?.transform?.GetChild(0)?.GetComponent<TMP_Text>();
@@ -74,15 +92,23 @@ public class SquareUIBuilder : MonoBehaviour
         {
             if (float.TryParse(data, out float dataValue))
             {
-                callback(dataValue);
+                // clamp the dataValue before invoking callback
+                float clampedValue = Mathf.Clamp(dataValue, clampedRange.Value.x, clampedRange.Value.y);
+                if (dataValue != clampedValue) floatInput.SetTextWithoutNotify(clampedValue.ToString());
+
+                callback(clampedValue);
             }
         }
 
         floatInput?.onValueChanged.AddListener(localCallback);
     }
 
-    public void AddInt(string label, int value, UnityAction<int> callback)
+    public void AddInt(string label, int value, UnityAction<int> callback, Vector2? clampedRange = null)
     {
+        // initialize default range
+        if (clampedRange == null)
+            clampedRange = new Vector2(Mathf.NegativeInfinity, Mathf.Infinity);
+
         GameObject intObj = Instantiate(intPrefab, transform);
 
         TMP_Text tmpText = intObj?.transform?.GetChild(0)?.GetComponent<TMP_Text>();
@@ -96,7 +122,11 @@ public class SquareUIBuilder : MonoBehaviour
         {
             if (int.TryParse(data, out int dataValue))
             {
-                callback(dataValue);
+                // clamp the dataValue before invoking callback
+                int clampedValue = (int)Mathf.Clamp(dataValue, clampedRange.Value.x, clampedRange.Value.y);
+                if (dataValue != clampedValue) intInput.SetTextWithoutNotify(clampedValue.ToString());
+
+                callback(clampedValue);
             }
         }
 
