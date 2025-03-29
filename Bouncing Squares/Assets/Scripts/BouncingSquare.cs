@@ -152,5 +152,9 @@ public class BouncingSquare : MonoBehaviour
         // stop rigidbody movement
         rb.angularVelocity = 0;
         rb.linearVelocity = Vector2.zero;
+
+        // reset health slider
+        healthSlider.value = healthSlider.maxValue;
+        health = (int)healthSlider.value;
     }
 }

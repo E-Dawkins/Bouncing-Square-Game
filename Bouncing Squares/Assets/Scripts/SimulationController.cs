@@ -30,6 +30,11 @@ public class SimulationController : MonoBehaviour
         {
             HandleSquareSelect();
         }
+
+        if (isStarted)
+        {
+            CheckForWinner();
+        }
     }
 
     private void HandleSquareSelect()
@@ -47,6 +52,22 @@ public class SimulationController : MonoBehaviour
             square.CreateUI(squareUIBuilder);
 
             selectedSquare = square;
+        }
+    }
+
+    private void CheckForWinner()
+    {
+        int aliveSquares = 0;
+        foreach (BouncingSquare square in squaresInLevel)
+        {
+            if (square.health > 0)
+                aliveSquares++;
+        }
+
+        if (!(aliveSquares > 1))
+        {
+            Debug.Log(aliveSquares == 1 ? "Someone won :)" : "Draw :(");
+            HandleSimStop();
         }
     }
 
