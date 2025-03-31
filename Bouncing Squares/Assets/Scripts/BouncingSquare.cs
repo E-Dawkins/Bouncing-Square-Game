@@ -10,6 +10,7 @@ public class BouncingSquare : MonoBehaviour
     private Rigidbody2D rb;
     private Vector2 lastVelocity = Vector2.zero;
     private Slider healthSlider;
+    private SpriteRenderer[] shieldRenderers = new SpriteRenderer[4];
 
     public bool isBlocking { get; private set; } = false;
     public int health { get; private set; } = 5;
@@ -31,6 +32,14 @@ public class BouncingSquare : MonoBehaviour
 
         outlineRenderer = transform.Find("Outline")?.gameObject.GetComponent<SpriteRenderer>();
         outlineRenderer.enabled = false;
+
+        Transform shieldParent = transform.Find("Shields");
+        shieldRenderers[0] = shieldParent?.GetChild(0)?.GetComponent<SpriteRenderer>();
+        shieldRenderers[1] = shieldParent?.GetChild(1)?.GetComponent<SpriteRenderer>();
+        shieldRenderers[2] = shieldParent?.GetChild(2)?.GetComponent<SpriteRenderer>();
+        shieldRenderers[3] = shieldParent?.GetChild(3)?.GetComponent<SpriteRenderer>();
+
+        SetShieldRenderers(false);
 
         // default modifiers
         modifiers.Add(new ContactDamage(this));
@@ -164,6 +173,7 @@ public class BouncingSquare : MonoBehaviour
         if (isBlocking)
         {
             isBlocking = false;
+            SetShieldRenderers(false);
             return;
         }
 
@@ -178,5 +188,14 @@ public class BouncingSquare : MonoBehaviour
     public void BlockNextDamage()
     {
         isBlocking = true;
+        SetShieldRenderers(true);
+    }
+
+    private void SetShieldRenderers(bool isActive) 
+    {
+        shieldRenderers[0].enabled = isActive;
+        shieldRenderers[1].enabled = isActive;
+        shieldRenderers[2].enabled = isActive;
+        shieldRenderers[3].enabled = isActive;
     }
 }
