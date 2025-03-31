@@ -146,7 +146,7 @@ public class SquareUIBuilder : MonoBehaviour
         dropdownInput?.AddOptions(options);
         dropdownInput?.SetValueWithoutNotify(0);
 
-        dropdownInput?.onValueChanged.AddListener(callback);
+        dropdownInput?.onValueChanged.AddListener((i) => { callback(i); });
     }
 
     public void AddModifierButton(string label, BouncingSquare square, UnityAction<string> callback)
