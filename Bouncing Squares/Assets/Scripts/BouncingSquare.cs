@@ -11,6 +11,8 @@ public class BouncingSquare : MonoBehaviour
     private Vector2 lastVelocity = Vector2.zero;
     private Slider healthSlider;
     private SpriteRenderer[] shieldRenderers = new SpriteRenderer[4];
+    private CollisionData currentCollisionData = new CollisionData();
+    private int blockingDirection = -1;
 
     public bool isBlocking { get; private set; } = false;
     public int health { get; private set; } = 5;
@@ -82,14 +84,13 @@ public class BouncingSquare : MonoBehaviour
             if (rb.linearVelocity.x == 0) rb.linearVelocity = new Vector2(-lastVelocity.x, rb.linearVelocity.y);
             if (rb.linearVelocity.y == 0) rb.linearVelocity = new Vector2(rb.linearVelocity.x, -lastVelocity.y);
 
-            CollisionData collisionData = new CollisionData();
-            collisionData.otherSquare = collision.gameObject?.GetComponent<BouncingSquare>();
-            collisionData.directionToOtherSquare = (collision.transform.position - transform.position).normalized;
+            currentCollisionData.otherSquare = collision.gameObject?.GetComponent<BouncingSquare>();
+            currentCollisionData.directionToOtherSquare = (collision.transform.position - transform.position).normalized;
 
             // handle collision in modifiers
             foreach (IModifier modifier in modifiers)
             {
-                modifier.HandleCollision(collisionData);
+                modifier.HandleCollision(currentCollisionData);
             }
         }
     }
@@ -170,7 +171,9 @@ public class BouncingSquare : MonoBehaviour
 
     public void Damage(int amount)
     {
-        if (isBlocking)
+        int directionToOtherSquare = GetDirectionFromVector(currentCollisionData.directionToOtherSquare);
+
+        if (isBlocking && directionToOtherSquare == blockingDirection)
         {
             isBlocking = false;
             SetShieldRenderers(false);
@@ -185,17 +188,46 @@ public class BouncingSquare : MonoBehaviour
         health += amount;
     }
 
-    public void BlockNextDamage()
+    public void BlockNextDamage(int direction = -1)
     {
         isBlocking = true;
-        SetShieldRenderers(true);
+        SetShieldRenderers(true, direction);
+        blockingDirection = direction;
     }
 
-    private void SetShieldRenderers(bool isActive) 
+    private void SetShieldRenderers(bool isActive, int direction = -1) 
     {
+        // a set direction should be modified, not all directions
+        if (direction != -1)
+        {
+            shieldRenderers[direction].enabled = isActive;
+            return;
+        }
+
+        // this modifies all directions
         shieldRenderers[0].enabled = isActive;
         shieldRenderers[1].enabled = isActive;
         shieldRenderers[2].enabled = isActive;
         shieldRenderers[3].enabled = isActive;
+    }
+
+    private int GetDirectionFromVector(Vector2 direction) // left, right, top, bottom => 0, 1, 2, 3
+    {
+        float highestDot = float.MinValue;
+        int lowestDirection = -1;
+
+        Vector2[] directions = new Vector2[4] { Vector2.left, Vector2.right, Vector2.up, Vector2.down};
+
+        for (int i = 0; i < 4; i++)
+        {
+            float currentDot = Vector2.Dot(direction, directions[i]);
+            if (currentDot > highestDot)
+            {
+                highestDot = currentDot;
+                lowestDirection = i;
+            }
+        }
+
+        return lowestDirection;
     }
 }

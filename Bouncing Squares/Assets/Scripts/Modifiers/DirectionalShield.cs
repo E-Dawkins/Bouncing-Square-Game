@@ -1,14 +1,16 @@
 using UnityEngine;
+using System.Collections.Generic;
 
-public class Shield : IModifier
+public class DirectionalShield : IModifier
 {
     public float cooldown = 3;
+    public int selectedDirection = 0;
     private float timer = 0;
 
-    public Shield(BouncingSquare owner) : base(owner)
+    public DirectionalShield(BouncingSquare owner) : base(owner)
     {
-        displayName = "Rechargeable Shield";
-        hint = "Regenerate a damage-blocking shield every X seconds.";
+        displayName = "Directional Shield";
+        hint = "Regenerate a directional damage-blocking shield every X seconds.";
     }
 
     private void Update()
@@ -20,7 +22,7 @@ public class Shield : IModifier
 
         if (timer >= cooldown)
         {
-            owningSquare.BlockNextDamage();
+            owningSquare.BlockNextDamage(selectedDirection);
             timer = 0;
         }
     }
@@ -29,5 +31,6 @@ public class Shield : IModifier
     {
         base.CreateUI(uiBuilder);
         uiBuilder.AddFloat("Cooldown", cooldown, (f) => { cooldown = f; }, new Vector2(0.1f, float.PositiveInfinity));
+        uiBuilder.AddDropdown("Direction", new List<string>(){ "Left", "Right", "Top", "Bottom" }, (i) => { selectedDirection = i; });
     }
 }
