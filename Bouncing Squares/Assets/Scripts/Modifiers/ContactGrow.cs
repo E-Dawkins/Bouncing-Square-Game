@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class ContactGrow : IModifier
 {
-    float rate = 1.1f;
+    public float rate = 1.1f;
 
     public ContactGrow(BouncingSquare owner) : base(owner)
     {
