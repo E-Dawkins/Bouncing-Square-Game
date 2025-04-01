@@ -10,6 +10,7 @@ public class ModifierAttribs
         typeof(HealthSteal),
         typeof(HealthRegen),
         typeof(ContactDamage),
+        typeof(ContactGrow),
         typeof(Shield),
         typeof(DirectionalShield)
     };
