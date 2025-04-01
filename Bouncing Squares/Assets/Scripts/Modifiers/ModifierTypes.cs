@@ -13,6 +13,7 @@ public class ModifierAttribs
         typeof(ContactShrink),
         typeof(ContactGrow),
         typeof(Shield),
-        typeof(DirectionalShield)
+        typeof(DirectionalShield),
+        typeof(GrowOverTime)
     };
 }
