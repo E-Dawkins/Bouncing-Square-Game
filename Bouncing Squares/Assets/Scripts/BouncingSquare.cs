@@ -167,6 +167,11 @@ public class BouncingSquare : MonoBehaviour
         // reset health slider
         healthSlider.value = healthSlider.maxValue;
         health = (int)healthSlider.value;
+
+        // reset shield vars
+        SetShieldRenderers(false);
+        isBlocking = false;
+        blockingDirection = -1;
     }
 
     public void Damage(int amount)
