@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class ContactShrink : IModifier
 {
-    public float rate = 0.9f;
+    public float amount = 0.1f;
+    public Vector2 minSize = new Vector2(0.2f, 0.2f);
 
     public ContactShrink(BouncingSquare owner) : base(owner)
     {
@@ -12,12 +13,14 @@ public class ContactShrink : IModifier
 
     public override void HandleCollision(CollisionData data)
     {
-        owningSquare.transform.localScale *= rate;
+        Vector3 calculatedScale = owningSquare.transform.localScale - new Vector3(amount, amount, 1);
+        owningSquare.transform.localScale = Vector3.Max(calculatedScale, minSize);
     }
 
     public override void CreateUI(SquareUIBuilder uiBuilder)
     {
         base.CreateUI(uiBuilder);
-        uiBuilder.AddFloat("Rate", rate, (f) => { rate = f; }, new Vector2(0.1f, 0.9f));
+        uiBuilder.AddFloat("Amount", amount, (f) => { amount = f; }, new Vector2(0.1f, 1));
+        uiBuilder.AddVec2("Min Size", minSize, (v) => { minSize = v; }, new Vector2(0.2f, 0.2f), new Vector2(10, 10));
     }
 }
