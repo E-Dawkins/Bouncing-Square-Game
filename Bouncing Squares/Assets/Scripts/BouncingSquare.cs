@@ -172,6 +172,9 @@ public class BouncingSquare : MonoBehaviour
         SetShieldRenderers(false);
         isBlocking = false;
         blockingDirection = -1;
+
+        // reset size
+        transform.localScale = Vector3.one;
     }
 
     public void Damage(int amount)
