@@ -10,6 +10,7 @@ public class ModifierAttribs
         typeof(HealthSteal),
         typeof(HealthRegen),
         typeof(ContactDamage),
+        typeof(ContactShrink),
         typeof(ContactGrow),
         typeof(Shield),
         typeof(DirectionalShield)
