@@ -15,6 +15,7 @@ public class ModifierAttribs
         typeof(Shield),
         typeof(DirectionalShield),
         typeof(GrowOverTime),
-        typeof(ShrinkOverTime)
+        typeof(ShrinkOverTime),
+        typeof(PingPongSize)
     };
 }
