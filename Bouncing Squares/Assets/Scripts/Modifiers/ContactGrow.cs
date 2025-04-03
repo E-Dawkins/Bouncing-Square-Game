@@ -19,7 +19,6 @@ public class ContactGrow : IModifier
 
     public override void CreateUI(SquareUIBuilder uiBuilder) 
     {
-        base.CreateUI(uiBuilder);
         uiBuilder.AddFloat("Amount", amount, (f) => { amount = f; }, new Vector2(0.1f, 1));
         uiBuilder.AddVec2("Max Size", maxSize, (v) => { maxSize = v; }, new Vector2(1.5f, 1.5f), new Vector2(10, 10));
     }

@@ -27,7 +27,6 @@ public class Shield : IModifier
 
     public override void CreateUI(SquareUIBuilder uiBuilder)
     {
-        base.CreateUI(uiBuilder);
         uiBuilder.AddFloat("Cooldown", cooldown, (f) => { cooldown = f; }, new Vector2(0.1f, float.PositiveInfinity));
     }
 }

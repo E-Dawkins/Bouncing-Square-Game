@@ -19,7 +19,6 @@ public class ContactShrink : IModifier
 
     public override void CreateUI(SquareUIBuilder uiBuilder)
     {
-        base.CreateUI(uiBuilder);
         uiBuilder.AddFloat("Amount", amount, (f) => { amount = f; }, new Vector2(0.1f, 1));
         uiBuilder.AddVec2("Min Size", minSize, (v) => { minSize = v; }, new Vector2(0.2f, 0.2f), new Vector2(10, 10));
     }

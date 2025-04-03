@@ -29,7 +29,6 @@ public class DirectionalShield : IModifier
 
     public override void CreateUI(SquareUIBuilder uiBuilder)
     {
-        base.CreateUI(uiBuilder);
         uiBuilder.AddFloat("Cooldown", cooldown, (f) => { cooldown = f; }, new Vector2(0.1f, float.PositiveInfinity));
         uiBuilder.AddDropdown("Direction", new List<string>(){ "Left", "Right", "Top", "Bottom" }, (i) => { selectedDirection = i; });
     }

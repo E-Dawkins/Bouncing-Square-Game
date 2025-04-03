@@ -28,7 +28,6 @@ public class Ghost : IModifier
 
     public override void CreateUI(SquareUIBuilder uiBuilder)
     {
-        base.CreateUI(uiBuilder);
         uiBuilder.AddFloat("Interval", interval, (f) => { interval = f; }, new Vector2(0.5f, float.PositiveInfinity));
         uiBuilder.AddFloat("Duration", duration, (f) => { duration = f; }, new Vector2(0.5f, float.PositiveInfinity));
     }

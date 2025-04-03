@@ -18,7 +18,6 @@ public class AddVelocity : IModifier
 
     public override void CreateUI(SquareUIBuilder uiBuilder)
     {
-        base.CreateUI(uiBuilder);
         uiBuilder.AddVec2("Velocity", velocity, (v) => { velocity = v; });
     }
 }

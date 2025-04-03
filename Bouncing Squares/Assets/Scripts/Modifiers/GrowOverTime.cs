@@ -19,7 +19,6 @@ public class GrowOverTime : IModifier
 
     public override void CreateUI(SquareUIBuilder uiBuilder)
     {
-        base.CreateUI(uiBuilder);
         uiBuilder.AddVec2("Rate Per Axis", ratePerAxis, (v) => { ratePerAxis = v; }, new Vector2(0.1f, 0.1f));
         uiBuilder.AddVec2("Max Size", maxSize, (v) => { maxSize = v; }, new Vector2(1.5f, 1.5f), new Vector2(10, 10));
     }

@@ -18,7 +18,6 @@ public class HealthSteal : IModifier
 
     public override void CreateUI(SquareUIBuilder uiBuilder)
     {
-        base.CreateUI(uiBuilder);
         uiBuilder.AddInt("Amount", value, (i) => { value = i; }, new Vector2(1, float.PositiveInfinity));
     }
 }
