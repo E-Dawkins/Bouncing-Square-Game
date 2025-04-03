@@ -81,6 +81,11 @@ public class SimulationController : MonoBehaviour
             startingPositions[square] = square.transform.position;
         }
 
+        selectedSquare?.SetSelected(false);
+        squareUIBuilder?.ClearUI();
+
+        selectedSquare = null;
+
         isStarted = true;
     }
 
