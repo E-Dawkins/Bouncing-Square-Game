@@ -103,6 +103,25 @@ public class BouncingSquare : MonoBehaviour
         else outlineRenderer.enabled = false;
     }
 
+    public void SetGhost(bool isGhost)
+    {
+        // Switch collision state
+        BoxCollider2D collider = GetComponent<BoxCollider2D>();
+        if (collider)
+        {
+            collider.excludeLayers = isGhost
+                ? 1 << LayerMask.NameToLayer("Square")
+                : 0;
+        }
+
+        // Some simple visual feedback, made the sprite renderer more 'ghost' like
+        SpriteRenderer renderer = GetComponent<SpriteRenderer>();
+        if (renderer)
+        {
+            renderer.color *= (isGhost ? 0.5f : 2);
+        }
+    }
+
     public void CreateUI(SquareUIBuilder uiBuilder)
     {
         uiBuilder.AddText(name);
