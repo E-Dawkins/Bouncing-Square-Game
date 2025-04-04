@@ -496,6 +496,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   squareUIBuilder: {fileID: 64440852}
+  squarePrefab: {fileID: 843622915884257650, guid: da22e62152d4fc342a8adc7087ec6aaa, type: 3}
 --- !u!4 &340043760
 Transform:
   m_ObjectHideFlags: 0

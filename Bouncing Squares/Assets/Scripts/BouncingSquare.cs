@@ -16,6 +16,7 @@ public class BouncingSquare : MonoBehaviour
 
     public bool isBlocking { get; private set; } = false;
     public int health { get; private set; } = 5;
+    public Vector2 position2d { get; private set; } = Vector2.zero;
     public List<IModifier> modifiers { get; private set; } = new List<IModifier>();
     public Color hoveredColor = Color.yellow;
     public Color selectedColor = Color.green;
@@ -42,6 +43,8 @@ public class BouncingSquare : MonoBehaviour
         shieldRenderers[3] = shieldParent?.GetChild(3)?.GetComponent<SpriteRenderer>();
 
         SetShieldRenderers(false);
+
+        position2d = transform.position;
 
         // default modifiers
         modifiers.Add(new ContactDamage(this));
@@ -125,7 +128,11 @@ public class BouncingSquare : MonoBehaviour
     public void CreateUI(SquareUIBuilder uiBuilder)
     {
         uiBuilder.AddText(name);
-        uiBuilder.AddVec2("Position", transform.position, (v) => { transform.position = v; });
+        uiBuilder.AddVec2("Position", position2d, (v) => 
+        {
+            transform.position = v;
+            position2d = v;
+        });
         uiBuilder.AddInt("Health", health, (i) => 
         { 
             health = i;
@@ -171,29 +178,19 @@ public class BouncingSquare : MonoBehaviour
         }
     }
 
-    public void Reset()
+    public void CopyPropsFrom(BouncingSquare otherSquare)
     {
-        // loop over all child components, if it is an IModifier, remove it :)
-        foreach (IModifier comp in GetComponents<IModifier>())
+        transform.position = otherSquare.position2d;
+        position2d = otherSquare.position2d;
+
+        health = (int)otherSquare.healthSlider.maxValue;
+        healthSlider.maxValue = otherSquare.healthSlider.maxValue;
+
+        modifiers = otherSquare.modifiers;
+        foreach (var modifier in modifiers)
         {
-            Destroy(comp);
+            modifier.owningSquare = this;
         }
-
-        // stop rigidbody movement
-        rb.angularVelocity = 0;
-        rb.linearVelocity = Vector2.zero;
-
-        // reset health slider
-        healthSlider.value = healthSlider.maxValue;
-        health = (int)healthSlider.value;
-
-        // reset shield vars
-        SetShieldRenderers(false);
-        isBlocking = false;
-        blockingDirection = -1;
-
-        // reset size
-        transform.localScale = Vector3.one;
     }
 
     public void Damage(int amount)

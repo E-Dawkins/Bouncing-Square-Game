@@ -4,10 +4,10 @@ using System.Collections.Generic;
 public class SimulationController : MonoBehaviour
 {
     public SquareUIBuilder squareUIBuilder;
+    public GameObject squarePrefab;
 
     private BouncingSquare selectedSquare;
     private List<BouncingSquare> squaresInLevel = new List<BouncingSquare>();
-    private Dictionary<BouncingSquare, Vector2> startingPositions = new Dictionary<BouncingSquare, Vector2>();
     private bool isStarted = false;
     private bool isPaused = false;
 
@@ -78,7 +78,6 @@ public class SimulationController : MonoBehaviour
         foreach (BouncingSquare square in squaresInLevel)
         {
             square.ApplyModifiers();
-            startingPositions[square] = square.transform.position;
         }
 
         selectedSquare?.SetSelected(false);
@@ -99,10 +98,20 @@ public class SimulationController : MonoBehaviour
     {
         if (!isStarted) return;
 
-        foreach (BouncingSquare square in squaresInLevel)
+        // 1. copy old square properties to new squares
+        // 2. delete old squares
+        for (int i = squaresInLevel.Count - 1; i >= 0; i--)
         {
-            square.Reset();
-            square.transform.position = startingPositions[square];
+            BouncingSquare oldSquare = squaresInLevel[i];
+            BouncingSquare newSquare = Instantiate(squarePrefab)?.GetComponent<BouncingSquare>();
+
+            newSquare.name = oldSquare.name;
+            newSquare.CopyPropsFrom(oldSquare);
+
+            squaresInLevel.RemoveAt(i);
+            squaresInLevel.Add(newSquare);
+
+            Destroy(oldSquare.gameObject);
         }
 
         isStarted = false;
