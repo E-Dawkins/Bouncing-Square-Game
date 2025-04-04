@@ -216,6 +216,10 @@ public class SquareUIBuilder : MonoBehaviour
 
             UpdateComponentButton(square);
         });
+
+        // wow this is ugly
+        TMP_Text hintText = parentObj?.transform.GetChild(2)?.GetChild(1)?.GetChild(1)?.GetComponent<TMP_Text>();
+        hintText?.SetText(modifier.hint);
     }
 
     private void UpdateComponentButton(BouncingSquare square)
