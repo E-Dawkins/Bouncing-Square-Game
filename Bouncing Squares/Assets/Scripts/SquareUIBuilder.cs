@@ -133,7 +133,7 @@ public class SquareUIBuilder : MonoBehaviour
         intInput?.onValueChanged.AddListener(localCallback);
     }
 
-    public void AddDropdown(string label, List<string> options, UnityAction<int> callback)
+    public void AddDropdown(string label, List<string> options, int defaultIndex, UnityAction<int> callback)
     {
         GameObject dropdownObj = Instantiate(dropdownPrefab, transform);
 
@@ -144,7 +144,7 @@ public class SquareUIBuilder : MonoBehaviour
         TMP_Dropdown dropdownInput = dropdownObj?.transform?.GetChild(1)?.GetComponent<TMP_Dropdown>();
         dropdownInput?.ClearOptions();
         dropdownInput?.AddOptions(options);
-        dropdownInput?.SetValueWithoutNotify(0);
+        dropdownInput?.SetValueWithoutNotify(defaultIndex);
 
         dropdownInput?.onValueChanged.AddListener((i) => { callback(i); });
     }
