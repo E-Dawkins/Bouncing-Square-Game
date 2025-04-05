@@ -31,6 +31,7 @@ public class Lasers : IModifier
         {
             timer = 0;
             lasersActive = !lasersActive;
+            owningSquare.SetLasersActive(lasersActive);
         }
 
         if (lasersActive)

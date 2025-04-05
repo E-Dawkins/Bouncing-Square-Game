@@ -45,6 +45,8 @@ public class BouncingSquare : MonoBehaviour
 
         position2d = transform.position;
 
+        SetLasersActive(false);
+
         // default modifiers
         modifiers.Add(new ContactDamage(this));
         modifiers.Add(new AddVelocity(this));
@@ -123,6 +125,12 @@ public class BouncingSquare : MonoBehaviour
         {
             renderer.color *= (isGhost ? 0.5f : 2);
         }
+    }
+
+    public void SetLasersActive(bool state)
+    {
+        GameObject lasersParent = transform.Find("Lasers")?.gameObject;
+        lasersParent?.SetActive(state);
     }
 
     public void CreateUI(SquareUIBuilder uiBuilder)
