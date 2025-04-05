@@ -12,7 +12,7 @@ public class ContactDamage : IModifier
 
     public override void HandleCollision(CollisionData data)
     {
-        data.otherSquare.Damage(value);
+        data.otherSquare.Damage(value, owningSquare.position2d);
     }
 
     public override void CreateUI(SquareUIBuilder uiBuilder)

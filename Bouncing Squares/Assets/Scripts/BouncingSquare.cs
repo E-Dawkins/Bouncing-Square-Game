@@ -11,7 +11,6 @@ public class BouncingSquare : MonoBehaviour
     private Vector2 lastVelocity = Vector2.zero;
     private Slider healthSlider;
     private SpriteRenderer[] shieldRenderers = new SpriteRenderer[4];
-    private CollisionData currentCollisionData = new CollisionData();
     private int blockingDirection = -1;
 
     public bool isBlocking { get; private set; } = false;
@@ -87,13 +86,14 @@ public class BouncingSquare : MonoBehaviour
             if (rb.linearVelocity.x == 0) rb.linearVelocity = new Vector2(-lastVelocity.x, rb.linearVelocity.y);
             if (rb.linearVelocity.y == 0) rb.linearVelocity = new Vector2(rb.linearVelocity.x, -lastVelocity.y);
 
-            currentCollisionData.otherSquare = collision.gameObject?.GetComponent<BouncingSquare>();
-            currentCollisionData.directionToOtherSquare = (collision.transform.position - transform.position).normalized;
+            CollisionData data = new CollisionData();
+            data.otherSquare = collision.gameObject?.GetComponent<BouncingSquare>();
+            data.directionToOtherSquare = (collision.transform.position - transform.position).normalized;
 
             // handle collision in modifiers
             foreach (IModifier modifier in modifiers)
             {
-                modifier.HandleCollision(currentCollisionData);
+                modifier.HandleCollision(data);
             }
         }
     }
@@ -193,11 +193,12 @@ public class BouncingSquare : MonoBehaviour
         }
     }
 
-    public void Damage(int amount)
+    public void Damage(int amount, Vector2 originPosition)
     {
-        int directionToOtherSquare = GetDirectionFromVector(currentCollisionData.directionToOtherSquare);
+        int directionToOtherSquare = GetDirectionFromVector((originPosition - position2d).normalized);
 
-        if (isBlocking && directionToOtherSquare == blockingDirection)
+        // we should block this damage, and either full shield is up or we are blocking in the damage direction
+        if (isBlocking && (blockingDirection == -1 || directionToOtherSquare == blockingDirection))
         {
             isBlocking = false;
             SetShieldRenderers(false);
