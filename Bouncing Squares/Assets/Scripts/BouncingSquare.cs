@@ -10,7 +10,6 @@ public class BouncingSquare : MonoBehaviour
     private Rigidbody2D rb;
     private Vector2 lastVelocity = Vector2.zero;
     private Slider healthSlider;
-    private SpriteRenderer[] shieldRenderers = new SpriteRenderer[4];
     private int blockingDirection = -1;
 
     public bool isBlocking { get; private set; } = false;
@@ -34,14 +33,6 @@ public class BouncingSquare : MonoBehaviour
 
         outlineRenderer = transform.Find("Outline")?.gameObject.GetComponent<SpriteRenderer>();
         outlineRenderer.enabled = false;
-
-        Transform shieldParent = transform.Find("Shields");
-        shieldRenderers[0] = shieldParent?.GetChild(0)?.GetComponent<SpriteRenderer>();
-        shieldRenderers[1] = shieldParent?.GetChild(1)?.GetComponent<SpriteRenderer>();
-        shieldRenderers[2] = shieldParent?.GetChild(2)?.GetComponent<SpriteRenderer>();
-        shieldRenderers[3] = shieldParent?.GetChild(3)?.GetComponent<SpriteRenderer>();
-
-        SetShieldRenderers(false);
 
         position2d = transform.position;
 
@@ -173,8 +164,10 @@ public class BouncingSquare : MonoBehaviour
 
     public void ApplyModifiers()
     {
-        foreach (IModifier modifier in modifiers)
+        for (int i = 0; i < modifiers.Count; i++)
         {
+            IModifier modifier = modifiers[i];
+
             Type type = modifier.GetType();
             IModifier copy = gameObject.AddComponent(type) as IModifier;
             foreach (var field in type.GetFields())
@@ -183,6 +176,8 @@ public class BouncingSquare : MonoBehaviour
             }
 
             copy.CustomStart();
+
+            modifiers[i] = copy; // replace old reference with new one
         }
     }
 
@@ -209,7 +204,6 @@ public class BouncingSquare : MonoBehaviour
         if (isBlocking && (blockingDirection == -1 || directionToOtherSquare == blockingDirection))
         {
             isBlocking = false;
-            SetShieldRenderers(false);
             return;
         }
 
@@ -224,24 +218,7 @@ public class BouncingSquare : MonoBehaviour
     public void BlockNextDamage(int direction = -1)
     {
         isBlocking = true;
-        SetShieldRenderers(true, direction);
         blockingDirection = direction;
-    }
-
-    private void SetShieldRenderers(bool isActive, int direction = -1) 
-    {
-        // a set direction should be modified, not all directions
-        if (direction != -1)
-        {
-            shieldRenderers[direction].enabled = isActive;
-            return;
-        }
-
-        // this modifies all directions
-        shieldRenderers[0].enabled = isActive;
-        shieldRenderers[1].enabled = isActive;
-        shieldRenderers[2].enabled = isActive;
-        shieldRenderers[3].enabled = isActive;
     }
 
     private int GetDirectionFromVector(Vector2 direction) // left, right, top, bottom => 0, 1, 2, 3
