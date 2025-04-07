@@ -11,6 +11,14 @@ public class Lasers : IModifier
     private float timer = 0;
     private float tickTimer = 0;
 
+    private GameObject visuals = null;
+    private GameObject visualInst = null;
+
+    private void Awake()
+    {
+        visuals = Resources.Load<GameObject>("LasersPrefab");
+    }
+
     public Lasers(BouncingSquare owner) : base(owner)
     {
         displayName = "Lasers";
@@ -31,7 +39,15 @@ public class Lasers : IModifier
         {
             timer = 0;
             lasersActive = !lasersActive;
-            owningSquare.SetLasersActive(lasersActive);
+
+            if (lasersActive)
+            {
+                visualInst ??= Instantiate(visuals, owningSquare.transform);
+            }
+            else if (visualInst != null)
+            {
+                Destroy(visualInst);
+            }
         }
 
         if (lasersActive)
@@ -42,7 +58,6 @@ public class Lasers : IModifier
             {
                 CheckForLaserHits();
                 tickTimer = 0;
-
             }
         }
     }
