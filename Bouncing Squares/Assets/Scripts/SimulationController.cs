@@ -60,7 +60,7 @@ public class SimulationController : MonoBehaviour
         int aliveSquares = 0;
         foreach (BouncingSquare square in squaresInLevel)
         {
-            if (square.health > 0)
+            if (square.IsAlive())
                 aliveSquares++;
         }
 

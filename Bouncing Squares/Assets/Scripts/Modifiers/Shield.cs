@@ -21,7 +21,7 @@ public class Shield : IModifier
 
     private void Update()
     {
-        if (owningSquare.isBlocking) // shield is already up, early return
+        if (owningSquare.IsBlocking()) // shield is already up, early return
             return;
         else if (visualInst != null) // not blocking, remove visuals
             Destroy(visualInst);

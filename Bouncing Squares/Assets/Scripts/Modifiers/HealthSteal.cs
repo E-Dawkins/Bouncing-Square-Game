@@ -12,7 +12,7 @@ public class HealthSteal : IModifier
 
     public override void HandleCollision(CollisionData data)
     {
-        data.otherSquare.Damage(value, owningSquare.position2d);
+        data.otherSquare.Damage(value, owningSquare.transform.position);
         owningSquare.Heal(value);
     }
 

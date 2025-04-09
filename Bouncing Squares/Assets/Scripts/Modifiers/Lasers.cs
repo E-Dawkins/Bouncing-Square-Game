@@ -68,7 +68,7 @@ public class Lasers : IModifier
 
         void handleSquareHits(Vector2 direction)
         {
-            Vector2 center = owningSquare.position2d + direction * 10;
+            Vector2 center = (Vector2)owningSquare.transform.position + direction * 10;
             Vector2 extent = new Vector2(0.5f, 0.5f) +
                 new Vector2(Mathf.Abs(direction.x), Mathf.Abs(direction.y)) * 19.5f; // (1, 0) => (19.5, 0) + (0.5, 0.5) => (20, 0)
             Collider2D[] colliders = Physics2D.OverlapBoxAll(center, extent, 0);
@@ -80,7 +80,7 @@ public class Lasers : IModifier
 
                 if (c.gameObject.layer == squareLayer)
                 {
-                    c.gameObject.GetComponent<BouncingSquare>()?.Damage(damagePerTick, owningSquare.position2d);
+                    c.gameObject.GetComponent<BouncingSquare>()?.Damage(damagePerTick, owningSquare.transform.position);
                 }
             }
         }

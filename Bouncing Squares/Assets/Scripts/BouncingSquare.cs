@@ -1,72 +1,40 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System;
-using UnityEngine.UI;
 
 public class BouncingSquare : MonoBehaviour
 {
-    private bool isSelected = false;
-    private SpriteRenderer outlineRenderer;
+    // Components
     private Rigidbody2D rb;
-    private Vector2 lastVelocity = Vector2.zero;
-    private Slider healthSlider;
-    private int blockingDirection = -1;
+    private Collider2D col;
+    private SpriteRenderer sprite;
+    [SerializeField] private Health healthComp;
+    [SerializeField] private Outline outlineComp;
 
-    public bool isBlocking { get; private set; } = false;
-    public int health { get; private set; } = 5;
-    public Vector2 position2d { get; private set; } = Vector2.zero;
+    // Square essentials
     public List<IModifier> modifiers { get; private set; } = new List<IModifier>();
-    public Color hoveredColor = Color.yellow;
-    public Color selectedColor = Color.green;
+    private Vector2 startingPosition = Vector2.zero;
+    private Vector2 lastVelocity = Vector2.zero;
+    private int? blockingDirection = null; // -1, 0, 1, 2, 3 => all, L, R, T, B
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        healthSlider = GetComponentInChildren<Slider>();
-
-        if (healthSlider)
-        {
-            healthSlider.minValue = 0;
-            healthSlider.maxValue = health;
-            healthSlider.value = health;
-        }
-
-        outlineRenderer = transform.Find("Outline")?.gameObject.GetComponent<SpriteRenderer>();
-        outlineRenderer.enabled = false;
-
-        position2d = transform.position;
+        col = GetComponent<Collider2D>();
+        sprite = GetComponent<SpriteRenderer>();
 
         // default modifiers
         modifiers.Add(new ContactDamage(this));
         modifiers.Add(new AddVelocity(this));
     }
 
-    private void Update()
-    {
-        if (healthSlider)
-        {
-            if (health > healthSlider.maxValue)
-                health = (int)healthSlider.maxValue;
+    private void FixedUpdate() => lastVelocity = rb.linearVelocity;
 
-            healthSlider.value = health;
-        }
-    }
+    private void OnMouseEnter() => outlineComp.OnHover();
 
-    private void FixedUpdate()
-    {
-        lastVelocity = rb.linearVelocity;
-    }
+    private void OnMouseExit() => outlineComp.OnUnHover();
 
-    private void OnMouseEnter()
-    {
-        outlineRenderer.color = hoveredColor;
-        outlineRenderer.enabled = true;
-    }
-
-    private void OnMouseExit()
-    {
-        outlineRenderer.enabled = isSelected;
-    }
+    public void SetSelected(bool selected) => outlineComp.OnSelect(selected);
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -89,54 +57,24 @@ public class BouncingSquare : MonoBehaviour
         }
     }
 
-    public void SetSelected(bool selected)
-    {
-        isSelected = selected;
+    public void SetCollision(bool state) => col.excludeLayers = (state ? 1 << LayerMask.NameToLayer("Square") : 0);
 
-        if (isSelected) outlineRenderer.color = selectedColor;
-        else outlineRenderer.enabled = false;
-    }
-
-    public void SetGhost(bool isGhost)
-    {
-        // Switch collision state
-        BoxCollider2D collider = GetComponent<BoxCollider2D>();
-        if (collider)
-        {
-            collider.excludeLayers = isGhost
-                ? 1 << LayerMask.NameToLayer("Square")
-                : 0;
-        }
-
-        // Some simple visual feedback, made the sprite renderer more 'ghost' like
-        SpriteRenderer renderer = GetComponent<SpriteRenderer>();
-        if (renderer)
-        {
-            renderer.color *= (isGhost ? 0.5f : 2);
-        }
-    }
+    public void SetOpacity(float opacity) => sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, opacity);
 
     public void CreateUI(SquareUIBuilder uiBuilder)
     {
         uiBuilder.AddText(name);
-        uiBuilder.AddVec2("Position", position2d, (v) => 
-        {
-            transform.position = v;
-            position2d = v;
-        });
-        uiBuilder.AddInt("Health", health, (i) => 
-        { 
-            health = i;
-            healthSlider.maxValue = health;
-        }, new Vector2(1, float.PositiveInfinity));
+        uiBuilder.AddVec2("Position", transform.position, (v) => { transform.position = v; });
+        uiBuilder.AddInt("Health", healthComp.GetValue(), (i) => { healthComp.SetMaxValue(i); }, new Vector2(1, float.PositiveInfinity));
 
+        // add existing modifiers to the ui
         foreach (IModifier modifier in modifiers)
         {
             uiBuilder.AddModifierLabel(modifier, this);
             modifier.CreateUI(uiBuilder);
         }
 
-        uiBuilder.AddModifierButton("Add Modifier", this, (s) => 
+        uiBuilder.AddModifierButton("Add Modifier", this, (s) =>
         {
             // add the corresponding modifier to our modifier list
             foreach (Type type in ModifierAttribs.Modifiers)
@@ -156,6 +94,8 @@ public class BouncingSquare : MonoBehaviour
 
     public void ApplyModifiers()
     {
+        startingPosition = transform.position;
+
         for (int i = 0; i < modifiers.Count; i++)
         {
             IModifier modifier = modifiers[i];
@@ -175,11 +115,10 @@ public class BouncingSquare : MonoBehaviour
 
     public void CopyPropsFrom(BouncingSquare otherSquare)
     {
-        transform.position = otherSquare.position2d;
-        position2d = otherSquare.position2d;
+        transform.position = otherSquare.startingPosition;
+        startingPosition = otherSquare.startingPosition;
 
-        health = (int)otherSquare.healthSlider.maxValue;
-        healthSlider.maxValue = otherSquare.healthSlider.maxValue;
+        healthComp.SetMaxValue(otherSquare.healthComp.GetMaxValue());
 
         modifiers = otherSquare.modifiers;
         foreach (var modifier in modifiers)
@@ -190,35 +129,32 @@ public class BouncingSquare : MonoBehaviour
 
     public void Damage(int amount, Vector2 originPosition)
     {
-        int directionToOtherSquare = GetDirectionFromVector((originPosition - position2d).normalized);
-
-        // we should block this damage, and either full shield is up or we are blocking in the damage direction
-        if (isBlocking && (blockingDirection == -1 || directionToOtherSquare == blockingDirection))
+        // block all directions or blocking specific direction
+        if (blockingDirection == -1 ||
+            blockingDirection == GetDirectionFromVector((originPosition - (Vector2)transform.position).normalized))
         {
-            isBlocking = false;
+            blockingDirection = null;
             return;
         }
 
-        health -= amount;
+        healthComp.SetValue(healthComp.GetValue() - amount);
     }
 
-    public void Heal(int amount)
-    {
-        health += amount;
-    }
+    public void Heal(int amount) => healthComp.SetValue(healthComp.GetValue() + amount);
 
-    public void BlockNextDamage(int direction = -1)
-    {
-        isBlocking = true;
-        blockingDirection = direction;
-    }
+    public bool IsAlive() => healthComp.GetValue() > 0;
+
+    public bool IsBlocking() => blockingDirection != null;
+
+    public void BlockNextDamage(int direction = -1) => blockingDirection = direction;
 
     private int GetDirectionFromVector(Vector2 direction) // left, right, top, bottom => 0, 1, 2, 3
     {
+        Vector2[] directions = new Vector2[4] { Vector2.left, Vector2.right, Vector2.up, Vector2.down };
+
         float highestDot = float.MinValue;
         int lowestDirection = -1;
 
-        Vector2[] directions = new Vector2[4] { Vector2.left, Vector2.right, Vector2.up, Vector2.down};
 
         for (int i = 0; i < 4; i++)
         {

@@ -21,7 +21,8 @@ public class Ghost : IModifier
         if (timer >= (isGhost ? duration : interval))
         {
             isGhost = !isGhost;
-            owningSquare.SetGhost(isGhost);
+            owningSquare.SetCollision(!isGhost);
+            owningSquare.SetOpacity(isGhost ? 0.5f : 1);
             timer = 0;
         }
     }

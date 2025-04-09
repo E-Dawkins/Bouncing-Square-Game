@@ -177,8 +177,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35e9fd010f20a424bad1b8b825d409f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hoveredColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  selectedColor: {r: 0, g: 1, b: 0, a: 1}
+  healthComp: {fileID: 3274024414048609496}
+  outlineComp: {fileID: 1511791739205703452}
 --- !u!1 &1703588749129594148
 GameObject:
   m_ObjectHideFlags: 0
@@ -264,6 +264,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5530250425329201972}
   - component: {fileID: 2027053287305358333}
+  - component: {fileID: 3274024414048609496}
   m_Layer: 3
   m_Name: Slider
   m_TagString: Untagged
@@ -343,6 +344,20 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &3274024414048609496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2068019431991073482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00f4d9a7cf03a5148a9a2da2014a0ef9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 5
+  slider: {fileID: 2027053287305358333}
 --- !u!1 &3203118514652214220
 GameObject:
   m_ObjectHideFlags: 0
@@ -530,6 +545,7 @@ GameObject:
   m_Component:
   - component: {fileID: 694945805469280568}
   - component: {fileID: 2675414355196250195}
+  - component: {fileID: 1511791739205703452}
   m_Layer: 3
   m_Name: Outline
   m_TagString: Untagged
@@ -597,7 +613,7 @@ SpriteRenderer:
   m_SortingLayer: -1
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 0}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -607,6 +623,21 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1511791739205703452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4410489367294497427}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82b97f9a668372a4ba9ce5df73592435, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineRenderer: {fileID: 2675414355196250195}
+  hoveredColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  selectedColor: {r: 0, g: 1, b: 0, a: 1}
 --- !u!1 &4419358201211601851
 GameObject:
   m_ObjectHideFlags: 0
