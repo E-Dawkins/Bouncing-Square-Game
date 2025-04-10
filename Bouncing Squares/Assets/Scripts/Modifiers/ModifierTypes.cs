@@ -18,6 +18,7 @@ public class ModifierAttribs
         typeof(ShrinkOverTime),
         typeof(PingPongSize),
         typeof(Ghost),
-        typeof(Lasers)
+        typeof(Lasers),
+        typeof(DamageTrail)
     };
 }
