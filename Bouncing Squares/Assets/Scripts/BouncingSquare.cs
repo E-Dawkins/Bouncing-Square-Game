@@ -36,6 +36,8 @@ public class BouncingSquare : MonoBehaviour
 
     public void SetSelected(bool selected) => outlineComp.OnSelect(selected);
 
+    public void SetSelectable(bool selectable) => outlineComp.gameObject.SetActive(selectable);
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Square"))

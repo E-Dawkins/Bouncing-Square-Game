@@ -39,7 +39,7 @@ public class SimulationController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !isStarted)
         {
             HandleSquareSelect();
         }
@@ -99,6 +99,7 @@ public class SimulationController : MonoBehaviour
         foreach (BouncingSquare square in squaresInLevel)
         {
             square.ApplyModifiers();
+            square.SetSelectable(false);
         }
 
         selectedSquare?.SetSelected(false);
@@ -131,6 +132,8 @@ public class SimulationController : MonoBehaviour
             squaresInLevel.Add(newSquare);
 
             Destroy(oldSquare.gameObject);
+
+            newSquare.SetSelectable(true);
         }
 
         isStarted = false;
