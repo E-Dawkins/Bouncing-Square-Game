@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class SimulationController : MonoBehaviour
 {
@@ -10,6 +11,10 @@ public class SimulationController : MonoBehaviour
     private List<BouncingSquare> squaresInLevel = new List<BouncingSquare>();
     private bool isStarted = false;
     private bool isPaused = false;
+
+    [SerializeField] private Button startButton = null;
+    [SerializeField] private Button pauseButton = null;
+    [SerializeField] private Button stopButton = null;
 
     private void Awake()
     {
@@ -22,6 +27,14 @@ public class SimulationController : MonoBehaviour
                 squaresInLevel.Add(square);
             }
         }
+
+        startButton.onClick.AddListener(HandleSimStart);
+        pauseButton.onClick.AddListener(HandleSimPause);
+        stopButton.onClick.AddListener(HandleSimStop);
+
+        startButton.interactable = true;
+        pauseButton.interactable = false;
+        stopButton.interactable = false;
     }
 
     void Update()
@@ -71,9 +84,17 @@ public class SimulationController : MonoBehaviour
         }
     }
 
-    public void HandleSimStart()
+    private void HandleSimStart()
     {
-        if (isPaused || isStarted) return;
+        if (isPaused)
+        {
+            SetPaused(false);
+            return;
+        }
+
+        startButton.interactable = false;
+        pauseButton.interactable = true;
+        stopButton.interactable = true;
 
         foreach (BouncingSquare square in squaresInLevel)
         {
@@ -88,15 +109,13 @@ public class SimulationController : MonoBehaviour
         isStarted = true;
     }
 
-    public void HandleSimPause()
-    {
-        Time.timeScale = (isPaused ? 1 : 0);
-        isPaused = !isPaused;
-    }
+    private void HandleSimPause() => SetPaused(true);
 
-    public void HandleSimStop()
+    private void HandleSimStop()
     {
-        if (!isStarted) return;
+        startButton.interactable = true;
+        pauseButton.interactable = false;
+        stopButton.interactable = false;
 
         // 1. copy old square properties to new squares
         // 2. delete old squares
@@ -117,5 +136,14 @@ public class SimulationController : MonoBehaviour
         isStarted = false;
         isPaused = false;
         Time.timeScale = 1;
+    }
+
+    private void SetPaused(bool state)
+    {
+        isPaused = state;
+        Time.timeScale = (state ? 0 : 1);
+
+        startButton.interactable = state;
+        pauseButton.interactable = !state;
     }
 }
