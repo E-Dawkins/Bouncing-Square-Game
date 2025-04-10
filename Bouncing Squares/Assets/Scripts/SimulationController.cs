@@ -139,6 +139,8 @@ public class SimulationController : MonoBehaviour
         isStarted = false;
         isPaused = false;
         Time.timeScale = 1;
+
+        squareUIBuilder?.AddDefaultUI();
     }
 
     private void SetPaused(bool state)

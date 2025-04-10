@@ -17,6 +17,10 @@ public class SquareUIBuilder : MonoBehaviour
 
     private GameObject componentButtonInstance;
 
+    private void Awake() => AddDefaultUI();
+
+    public void AddDefaultUI() => AddText("Select a square...");
+
     public void ClearUI()
     {
         for (int i = 0; i < transform.childCount; i++)
